@@ -1,0 +1,38 @@
+
+.container {
+    margin-top:20px;
+}
+
+.navbar {
+    font-size:18px;
+    min-height:70px;
+}
+
+.navbar .container {
+    margin-top:14px;
+}
+
+.navbar-brand {
+    font-size:22px;
+    font-weight:400;
+}
+
+.navbar-brand div.pull-left img {
+    margin-top:-18px;
+    height:60px;
+}
+
+.page-header-img {
+    margin-bottom:15px;
+    margin-left:15px;
+}
+
+.toctree-wrapper li {
+    margin-top:15px;
+    font-size:18px;
+}
+
+#about-me ul li {
+    font-size:20px;
+    margin-bottom:15px;
+}
