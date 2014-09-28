@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JsonX &lt;-&gt; JsonML &lt;-&gt; JsonX &lt;-&gt; JsonML &lt;-&gt; JsonML &lt;-&gt; JsonX &lt;-&gt; JsonML</title>
+    <script src="jsonml-xml.js"></script>
+    <script src="main.js"></script>
+</head>
+<body>
+<h1>This app converts <a href="http://en.wikipedia.org/wiki/JSON">Json</a> to <a href="http://www.reddit.com/r/programming/comments/h0chx/need_more_enterprise_introducing_jsonx_an_ibm/">JsonX</a> to <a href="http://www.jsonml.org/">JsonML</a> and so on..</h1>
+<h2>Be careful - it will crash your browser pretty fast...</h2>
+<h3>Enter your (valid!) JSON here:</h3>
+<textarea id="thejson" style="width:80%;height:200px;"></textarea>
+<h3><a href="javascript:go(1000);">GO!</a></h3>
+<h3>Level: <span id="level">0</span></h3>
+<script>
+    function go(interval) {
+        var data = '';
+        var level = 0;
+        var isJson = true;
+        var func = function() {
+            if (level == 0) {
+                data = JSON.parse(document.getElementById('thejson').value);
+            }
+            level++;
+            document.getElementById('level').innerHTML = level;
+            if (isJson) {
+                data = jsonToJsonx(data);
+                isJson = false;
+                document.getElementById('thejson').value = data;
+            } else {
+                data = jsonxToJsonml(data);
+                isJson = true;
+                document.getElementById('thejson').value = JSON.stringify(data);
+            }
+            setTimeout(func, interval);
+        };
+        func();
+    }
+</script>
+</body>
+</html>
