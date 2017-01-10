@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using Django as an easy to setup admin interface for existing DB &mdash; Ori Hoch - Web Developer</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/superhero/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="Ori Hoch - Web Developer" href="../index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+        <link rel="stylesheet" href="/_static/style.css"/>
+
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          <!--<div class="pull-left"><img src="../_static/logo.jpg"></div>-->
+          <div class="pull-right">&nbsp; &nbsp;Ori Hoch</div>
+        </a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../projects/index.html">Projects</a></li>
+                <li><a href="../lectures/index.html">Lectures</a></li>
+                <li><a href="index.html">Blog</a></li>
+                <li><a href="../index.html">About me</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Navigation <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <div class="section" id="using-django-as-an-easy-to-setup-admin-interface-for-existing-db">
+<h1>Using Django as an easy to setup admin interface for existing DB<a class="headerlink" href="#using-django-as-an-easy-to-setup-admin-interface-for-existing-db" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">Prerequisites</p>
+<ul class="simple">
+<li>The project uses a DB Backend Django supports</li>
+<li>You have Python and Virtualenvwrapper installed - <a class="reference external" href="https://virtualenvwrapper.readthedocs.io/en/latest/">https://virtualenvwrapper.readthedocs.io/en/latest/</a></li>
+<li>You have an existing project in any programming language (could be NodeJS / Ruby / Php / Python etc..).</li>
+<li>In this guide the existing project is called &#8220;spark&#8221;</li>
+</ul>
+<p class="rubric">Python project setup</p>
+<ul class="simple">
+<li>run from the root directory of the project:</li>
+</ul>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>mkvirtualenv -p python3 spark-django
+workon spark-django
+<span class="nb">echo</span> <span class="s2">&quot;Django&quot;</span> &gt;&gt; requirements.txt
+pip install -r requirements.txt
+django-admin startproject djspark ./
+</pre></div>
+</div>
+<p class="rubric">Support for local settings</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s2">&quot;from .settings import *&quot;</span> &gt; djspark/local_settings.py
+<span class="nb">echo</span> <span class="s2">&quot;INSTALLED_APPS += [&#39;djspark&#39;]&quot;</span> &gt;&gt; djspark/local_settings.py
+<span class="nb">echo</span> <span class="s2">&quot;/local_settings.py&quot;</span> &gt;&gt; djspark/.gitignore
+</pre></div>
+</div>
+<ul class="simple">
+<li>edit manage.py - change djspark.settings to djspark.local_settings</li>
+<li>edit spark/wsgi.py - change djspark.settings to djspark.local_settings</li>
+</ul>
+<p class="rubric">Connect to the existing DB</p>
+<ul class="simple">
+<li>add you DB configuration to djspark/local_settings.py</li>
+<li>for mysql it will be something like this:</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">DATABASES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;ENGINE&#39;</span><span class="p">:</span> <span class="s1">&#39;django.db.backends.mysql&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;NAME&#39;</span><span class="p">:</span> <span class="s1">&#39;mydatabase&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;USER&#39;</span><span class="p">:</span> <span class="s1">&#39;mydatabaseuser&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PASSWORD&#39;</span><span class="p">:</span> <span class="s1">&#39;mypassword&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;HOST&#39;</span><span class="p">:</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PORT&#39;</span><span class="p">:</span> <span class="s1">&#39;5432&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Refer to Django documentation for details</li>
+<li>You will also need to install the relevant database driver:</li>
+</ul>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s2">&quot;mysqlclient&quot;</span> &gt;&gt; requirements.txt
+pip install -r requirements.txt
+</pre></div>
+</div>
+<p class="rubric">Setup admin for all existing DB models</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>./manage.py inspectdb &gt; djspark/models.py
+</pre></div>
+</div>
+<ul class="simple">
+<li>Review djspark/models.py file and delete irrelevant models / update fields</li>
+<li>edit djspark/admin.py - paste the following and modify according to your models and admin requirements</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<span class="k">class</span> <span class="nc">AutoModelAdmin</span><span class="p">(</span><span class="n">admin</span><span class="o">.</span><span class="n">ModelAdmin</span><span class="p">):</span>
+
+    <span class="n">list_display</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">search_fields</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">list_hide</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">search_exclude</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">admin_site</span><span class="p">,</span> <span class="n">list_hide</span><span class="o">=</span><span class="p">(),</span> <span class="n">search_exclude</span><span class="o">=</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_hide</span> <span class="o">==</span> <span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">list_hide</span> <span class="o">=</span> <span class="n">list_hide</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_exclude</span> <span class="o">==</span> <span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">search_exclude</span> <span class="o">=</span> <span class="n">search_exclude</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_display</span> <span class="o">==</span> <span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">list_display</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_default_list_display</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_fields</span> <span class="o">==</span> <span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">search_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_default_search_fields</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AutoModelAdmin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">admin_site</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_default_list_display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">fields</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_hide</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">get_default_search_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">fields</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_exclude</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_class</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">auto_model_admin_class_generator</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">admin_site</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">AutoModelAdmin</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">admin_site</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">auto_model_admin_class_generator</span>
+
+
+<span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">CampDetails</span><span class="p">,</span> <span class="n">AutoModelAdmin</span><span class="p">)</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Camps</span><span class="p">,</span> <span class="n">AutoModelAdmin</span><span class="p">)</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">NpoMembers</span><span class="p">,</span> <span class="n">AutoModelAdmin</span><span class="p">)</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Payments</span><span class="p">,</span> <span class="n">AutoModelAdmin</span><span class="p">)</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Users</span><span class="p">,</span> <span class="n">AutoModelAdmin</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="n">list_hide</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,)))</span>
+</pre></div>
+</div>
+<p class="rubric">migrate</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>./manage.py migrate
+</pre></div>
+</div>
+<ul class="simple">
+<li>at this point you might get errors regarding your models</li>
+<li>best fix in this case is to comment-out the problematic fields</li>
+</ul>
+<p class="rubric">create user and log-in</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>./manage.py createsuperuser
+./manage.py runserver
+</pre></div>
+</div>
+<ul class="simple">
+<li><a class="reference external" href="http://localhost:8000/admin">http://localhost:8000/admin</a></li>
+<li>log-in with the superuser you created</li>
+</ul>
+<p class="rubric">next steps</p>
+<ul class="simple">
+<li><a class="reference external" href="https://docs.djangoproject.com/en/1.10/ref/contrib/admin/">Django admin documentation</a></li>
+<li><a class="reference external" href="https://docs.djangoproject.com/en/1.10/ref/models/fields/">Django model field reference</a></li>
+</ul>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer"><div class="container">
+<p>
+    Ori Hoch | &lt;ori at uumpa dot com&gt; |
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2
+    | <a href="/sitemap.html">Sitemap</a>
+</p>
+</div></footer>
+  </body>
+</html>
